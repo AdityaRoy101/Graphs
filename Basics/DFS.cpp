@@ -1,4 +1,4 @@
-// Distinct Subsequences| (DP-32)
+// https://www.geeksforgeeks.org/problems/bfs-traversal-of-graph/1
 #include <bits/stdc++.h>
 using namespace std;
 typedef int ll;
