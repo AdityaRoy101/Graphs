@@ -3,34 +3,45 @@
 using namespace std;
 typedef int ll;
 
-void toposort_dfs(ll node, ll E, vector<ll> adj[], vector<ll> &visArr, stack<ll> &st){
+vector<ll> toposort_bfs(ll V, ll E, vector<ll> adj[]){
 	
-	visArr[node] = 1;
+	vector<ll> ans;
 	
-	for(auto it : adj[node]){
-		if(!visArr[it]){
-			toposort_dfs(it, E, adj, visArr, st);
-		}
-	}
-	
-	st.push(node);
-	return;
-}
-
-
-stack<ll> runner(ll V, ll E, vector<ll> adj[]){
+	// Indegree Array
+	vector<ll> indegree(V+1, 0);
 	
 	
-	vector<ll> visArr(V+1, 0);
-	stack<ll> st;
-	
-	// For multiple component graph
 	for(ll i=0;i<V;i++){
-		if(!visArr[i]){
-			toposort_dfs(i, E, adj, visArr, st);
+		for(auto it : adj[i]){
+			indegree[it]++;
 		}
 	}
-	return st;
+	
+	queue<ll> q;
+	
+	// Initial Config
+	for(ll i=0;i<V;i++){
+		if(indegree[i] == 0){
+			q.push(i);
+		}
+	}
+	
+	while(!q.empty()){
+		ll node = q.front();
+		q.pop();
+		
+		ans.push_back(node);
+		for(auto it : adj[node]){
+			
+			// Relaxing the edges
+			indegree[it]--;
+			if(indegree[it] == 0){
+				q.push(it);
+			}
+		}
+	}
+	
+	return ans;
 }
 
 int main() {
@@ -52,12 +63,9 @@ int main() {
 		// Adjacency List
 		vector<ll> adj[] = {{1,2,3},{},{4},{},{}};
 		
-		stack<ll> st = runner(V, E, adj);
-		
-		while(!st.empty()){
-			ll node = st.top();
-			st.pop();
-			cout<<node<<" ";
+		vector<ll> ans = toposort_bfs(V, E, adj);
+		for(auto it : ans){
+			cout<<it<<" ";
 		}
 			
 	}
